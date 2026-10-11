@@ -32,9 +32,19 @@ def vw_dim_customers():
     
     return masked_df
 
-
+# by creating table
 INSERT INTO dev.config.authorized_pii_users 
 VALUES 
     ('hr_admin@yourcompany.com', 'HR Admin', 'system', current_timestamp()),
     ('compliance_officer@yourcompany.com', 'Compliance', 'system', current_timestamp()),
-    ('pipeline_service_principal@yourcompany.com', 'ETL', 'system', current_timestamp());
+    ('pipeline_service_principal@yourcompany.com', 'ETL', 'system', current_timestamp())
+
+# by group adding
+# The PySpark expr() would look like this instead of doing a SELECT from a table:
+"email": expr("""
+    CASE 
+        WHEN is_account_group_member('pii_readers') 
+        THEN email 
+        ELSE CONCAT(LEFT(email, 2), '***@***.com') 
+    END
+""")
